@@ -55,7 +55,8 @@ export type ProviderAuthRegistry = {
   getProviderAuth(provider: string): Promise<{ auth: { baseUrl?: string } } | undefined>
 }
 
-type SideCallRegistry = Partial<ProviderRegistry> &
+type SideCallRegistry = Partial<Pick<ExtensionContext['modelRegistry'], 'streamSimple'>> &
+  Partial<ProviderRegistry> &
   Partial<RegisteredProviderConfigRegistry> &
   Partial<ProviderAuthRegistry>
 
@@ -102,12 +103,9 @@ export async function withProviderAuthBaseUrl<
 }
 
 /**
- * pi 0.80 originally registered extension `streamSimple` handlers into the
- * global api registry, so `completeSimple` worked for custom apis. Later 0.80
- * builds exposed config-registered handlers through `getRegisteredProviderConfig`,
- * and pi 0.81 moved dispatch onto the composed provider (`getProvider`). Try
- * the composed provider first, keep the config fallback for 0.80.8–0.80.10,
- * then fall back to `completeSimple` for built-ins and older runtimes.
+ * Use the model runtime when available so it normalizes the transcript and
+ * prepares provider requests. Older pi versions use composed providers,
+ * config-registered handlers, or the global api registry.
  */
 async function completeWithModel(
   ctx: ExtensionContext,
@@ -115,7 +113,11 @@ async function completeWithModel(
   context: Context,
   options: SimpleStreamOptions
 ): Promise<AssistantMessage> {
-  const registry = ctx.modelRegistry as ExtensionContext['modelRegistry'] & SideCallRegistry
+  const registry = ctx.modelRegistry as unknown as SideCallRegistry
+  if (typeof registry.streamSimple === 'function') {
+    return registry.streamSimple(model, context, options).result()
+  }
+
   const requestModel = await withProviderAuthBaseUrl(registry, model)
 
   if (typeof registry.getProvider === 'function') {
@@ -167,6 +169,7 @@ export async function runLlm(
   signal?: AbortSignal,
   fork?: ForkContext
 ): Promise<string | undefined> {
+  if (signal?.aborted) return undefined
   const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model)
   if (!auth.ok) return undefined
 
@@ -193,10 +196,15 @@ export async function runLlm(
     }
   )
 
-  // A fork replays the agent's system prompt and tool definitions, so the
-  // model may answer with a tool call instead of text. Report failure so the
-  // caller can retry without the fork.
-  if (response.stopReason === 'toolUse') return undefined
+  // Failed or cancelled streams can contain partial text. A fork can also
+  // produce a tool call. Report failure so the caller can retry without the fork.
+  if (
+    response.stopReason === 'toolUse' ||
+    response.stopReason === 'error' ||
+    response.stopReason === 'aborted'
+  ) {
+    return undefined
+  }
 
   return response.content
     .filter((c): c is { type: 'text'; text: string } => c.type === 'text')

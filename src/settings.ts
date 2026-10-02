@@ -510,9 +510,9 @@ export function registerLangSettings(pi: ExtensionAPI, deps: SettingsDeps): void
   // mismatch. omp has no 'model_select'; the closest signal is 'agent_start',
   // which fires before *every* agent turn, so only warn when the session model
   // actually changed since it was last seen.
-  // Widen pi to a record for runtime detection; see translate.ts for why.
+  // Pi has both renderer APIs; omp lacks the custom-entry renderer.
   const runtime = pi as unknown as Record<string, unknown>
-  const isOmp = typeof runtime.registerMessageRenderer === 'function'
+  const isOmp = typeof runtime.registerEntryRenderer !== 'function'
   if (isOmp) {
     pi.on('agent_start', (_event, ctx) => {
       const current = sessionModelKey(ctx)

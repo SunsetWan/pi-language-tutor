@@ -60,11 +60,10 @@ export function registerTranslation(pi: ExtensionAPI, deps: TranslateDeps): void
     box.addChild(new Markdown(markdown, 0, 0, getMarkdownTheme()))
     return box
   }
-  // ExtensionAPI's type lacks registerMessageRenderer, so probing `in pi`
-  // would narrow pi to never. Widen to an untyped record first — runtime
-  // detection only; both branches dispatch to the real, typed methods.
+  // Pi has both renderer APIs. Only runtimes without an entry renderer use
+  // omp's message renderer for custom entries.
   const runtime = pi as unknown as Record<string, unknown>
-  const isOmp = typeof runtime.registerMessageRenderer === 'function'
+  const isOmp = typeof runtime.registerEntryRenderer !== 'function'
   if (isOmp) {
     const omp = pi as {
       registerMessageRenderer<T>(
