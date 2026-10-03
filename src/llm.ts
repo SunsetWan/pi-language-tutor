@@ -55,7 +55,12 @@ export type ProviderAuthRegistry = {
   getProviderAuth(provider: string): Promise<{ auth: { baseUrl?: string } } | undefined>
 }
 
-type SideCallRegistry = Partial<Pick<ExtensionContext['modelRegistry'], 'streamSimple'>> &
+/** Pi 1.0 registry surface: the model runtime normalizes and routes requests. */
+type ModelRuntimeRegistry = {
+  streamSimple: StreamSimpleFn
+}
+
+type SideCallRegistry = Partial<ModelRuntimeRegistry> &
   Partial<ProviderRegistry> &
   Partial<RegisteredProviderConfigRegistry> &
   Partial<ProviderAuthRegistry>
@@ -103,9 +108,10 @@ export async function withProviderAuthBaseUrl<
 }
 
 /**
- * Use the model runtime when available so it normalizes the transcript and
- * prepares provider requests. Older pi versions use composed providers,
- * config-registered handlers, or the global api registry.
+ * Pi 1.0 exposes `modelRegistry.streamSimple`, which normalizes the transcript
+ * and prepares provider requests. Pi 0.81–0.84 dispatch through the composed
+ * provider (`getProvider`), 0.80.8–0.80.10 through config-registered handlers,
+ * and built-ins and older runtimes through `completeSimple`.
  */
 async function completeWithModel(
   ctx: ExtensionContext,
