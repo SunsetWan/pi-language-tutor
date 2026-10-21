@@ -6,11 +6,10 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/pi-language-tutor"><img src="https://img.shields.io/npm/v/pi-language-tutor" alt="npm" /></a>
-  <a href="https://github.com/mackt/pi-language-tutor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mackt/pi-language-tutor/ci.yml?branch=main&label=CI" alt="CI" /></a>
-  <a href="https://github.com/mackt/pi-language-tutor/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/pi-language-tutor" alt="license" /></a>
-  <a href="https://www.npmjs.com/package/pi-language-tutor"><img src="https://img.shields.io/npm/dw/pi-language-tutor" alt="downloads" /></a>
-  <a href="https://github.com/mackt/pi-language-tutor"><img src="https://img.shields.io/github/stars/mackt/pi-language-tutor" alt="stars" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor/releases"><img src="https://img.shields.io/github/v/release/SunsetWan/pi-language-tutor" alt="release" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/SunsetWan/pi-language-tutor/ci.yml?branch=main&label=CI" alt="CI" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor/blob/main/LICENSE"><img src="https://img.shields.io/github/license/SunsetWan/pi-language-tutor" alt="license" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor"><img src="https://img.shields.io/github/stars/SunsetWan/pi-language-tutor" alt="stars" /></a>
 </p>
 
 <p align="center">
@@ -19,25 +18,29 @@
 
 ## Install
 
-Requires **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** and Node.js 22.19.0 or later. This branch supports only this Pi release; older Pi versions and OMP are unsupported.
+Requires **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** and Node.js 22.19.0 or later. This fork supports only this Pi release; older Pi versions and OMP are unsupported.
 
 ```sh
-pi install npm:pi-language-tutor
+pi install git:github.com/SunsetWan/pi-language-tutor@v0.1.0
 ```
 
 That’s the only required step. Defaults (learning English, native Simplified Chinese) work out of the box. Another language? Type `/lang` or run `/lang native ja`.
 
+The tag pins the installed version. Install a newer release tag when you want to upgrade.
+
+If you already use the upstream extension, run `pi list` and remove its source with `pi remove <source>` before installing this fork. For example, use `pi remove npm:pi-language-tutor` for the upstream npm package. If you installed a symlink manually, remove that link. This prevents duplicate extensions. Existing settings and flashcards use the same files.
+
 <details>
-<summary>Alternative: install from git, or hack on a local clone</summary>
+<summary>Development: track main or use a local clone</summary>
 
 ```sh
-pi install git:github.com/mackt/pi-language-tutor
+pi install git:github.com/SunsetWan/pi-language-tutor@main
 ```
 
 Or symlink a clone into pi’s global extensions directory (auto-discovered via `pi.extensions`, hot-reloads with `/reload`):
 
 ```sh
-git clone https://github.com/mackt/pi-language-tutor.git
+git clone https://github.com/SunsetWan/pi-language-tutor.git
 ln -s "$(pwd)/pi-language-tutor" ~/.pi/agent/extensions/pi-language-tutor
 ```
 
@@ -49,13 +52,13 @@ ln -s "$(pwd)/pi-language-tutor" ~/.pi/agent/extensions/pi-language-tutor
 
 Prompt in the language you’re learning. While the agent works, a panel explains each mistake in your **native** language — fix, why, and a more natural whole sentence.
 
-<img src="https://raw.githubusercontent.com/mackt/pi-language-tutor/main/docs/writing-check.png" width="720" alt="Writing check panel explaining mistakes in the native language while the agent continues working" />
+<img src="https://raw.githubusercontent.com/SunsetWan/pi-language-tutor/main/docs/writing-check.png" width="720" alt="Writing check panel explaining mistakes in the native language while the agent continues working" />
 
 ### ✏ Writing tutor
 
 Prompt in your **native** language because the thought came faster that way. The tutor teaches the natural whole-sentence form in the learning language, the key words, and the grammar that carries it.
 
-<img src="https://raw.githubusercontent.com/mackt/pi-language-tutor/main/docs/writing-tutor.png" width="720" alt="Writing tutor panel: whole-sentence English, vocabulary notes, and grammar for a Chinese prompt" />
+<img src="https://raw.githubusercontent.com/SunsetWan/pi-language-tutor/main/docs/writing-tutor.png" width="720" alt="Writing tutor panel: whole-sentence English, vocabulary notes, and grammar for a Chinese prompt" />
 
 ### 🗂 Flashcard review
 
@@ -65,7 +68,7 @@ Words taught by the Writing tutor are saved automatically. Run `/flashcards` to 
 
 After a reply, press `alt+t` (macOS: ⌥T) or run `/translate`. Each paragraph is followed by its translation — immersive-translate style, with short code blocks kept intact.
 
-<img src="https://raw.githubusercontent.com/mackt/pi-language-tutor/main/docs/bilingual-card.png" width="720" alt="Bilingual card: each English paragraph followed by its Chinese translation" />
+<img src="https://raw.githubusercontent.com/SunsetWan/pi-language-tutor/main/docs/bilingual-card.png" width="720" alt="Bilingual card: each English paragraph followed by its Chinese translation" />
 
 ## Try this first
 
@@ -150,7 +153,16 @@ Flashcards are stored in `~/.pi/agent/flashcards.json`. Review limits and FSRS d
 
 Skip heuristics, check vs tutor rules, flashcard scheduling, bilingual card details, custom providers, and context-mode cost trade-offs:
 
-→ **[Advanced behavior](https://github.com/mackt/pi-language-tutor/blob/main/docs/advanced.md)**
+→ **[Advanced behavior](https://github.com/SunsetWan/pi-language-tutor/blob/main/docs/advanced.md)**
+
+## Maintenance
+
+SunsetWan maintains this fork of [mackt/pi-language-tutor](https://github.com/mackt/pi-language-tutor). The MIT license and upstream copyright remain in place.
+
+- `main` is the development and release branch. Changes enter through PRs after CI passes.
+- Upstream changes are reviewed and selected as needed. There is no automatic upstream merge.
+- Support moves to the latest Pi release after validation. The three Pi SDK dependencies are updated together.
+- This fork starts its own version sequence at `v0.1.0`. Releases are published on [GitHub](https://github.com/SunsetWan/pi-language-tutor/releases) and installed from Git.
 
 ## Development
 
@@ -164,9 +176,9 @@ npm run fmt:check
 
 Layout, scripts, and how product screenshots are produced:
 
-→ **[Development guide](https://github.com/mackt/pi-language-tutor/blob/main/docs/development.md)**
+→ **[Development guide](https://github.com/SunsetWan/pi-language-tutor/blob/main/docs/development.md)**
 
-Contributions welcome via PR. Conventions live in [AGENTS.md](https://github.com/mackt/pi-language-tutor/blob/main/AGENTS.md).
+Contributions welcome via PR. Conventions live in [AGENTS.md](https://github.com/SunsetWan/pi-language-tutor/blob/main/AGENTS.md).
 
 ## License
 

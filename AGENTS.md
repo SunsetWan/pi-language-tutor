@@ -22,34 +22,57 @@ not adjectives.
 - PR title = the eventual squash-commit title (same format). PR body: what
   changed and why, then how it was verified. Link issues with `Closes #N`.
 
+## Fork maintenance
+
+- `SunsetWan/pi-language-tutor` owns the maintained `main` branch and releases.
+  Use `origin` for this fork and `upstream` for `mackt/pi-language-tutor`.
+  Verify remote URLs before pushing. Do not push to `upstream`.
+- Review and select upstream changes as needed. Do not merge upstream
+  automatically. Keep the upstream license and copyright notice.
+- Support only the latest validated Pi release. Update the three Pi SDK
+  packages together and run the full checks before merging.
+- Fetch upstream branches without importing its release tags. If a historical
+  tag is needed locally, store it under `upstream/` to avoid name conflicts.
+
 ## READMEs are bilingual twins
 
 - `README.md` (EN) and `README.zh-CN.md` (zh) mirror each other
   section-for-section. Any edit to one must be synced to the other in the
   same PR. The zh version is written as natural Chinese, not a mechanical
   translation of the EN sentences.
-- Images use absolute GitHub raw URLs (relative paths don't render on
-  npmjs.com).
+- Images use absolute GitHub raw URLs for this fork.
 
 ## Releases
 
+Publish GitHub Releases and install from Git. The package is marked `private`
+to prevent npm publication. The fork has its own version sequence, starting
+at `0.1.0`.
+
 1. From the latest `main`, create a branch named `chore/bump-version-X.Y.Z`.
-2. Run either `npm version minor --no-git-tag-version` or
-   `npm version patch --no-git-tag-version`. Commit only `package.json` and
+2. Run `npm version X.Y.Z --no-git-tag-version`. Commit only `package.json` and
    `package-lock.json` as `chore(pkg): bump version to X.Y.Z`, then open and
-   merge the version-bump PR.
-3. Update local `main` to the merged commit, then create and push its annotated
+   merge the version-bump PR after all checks pass.
+3. Update local `main` to the merged commit and confirm its CI passes. Verify
+   that the new tag does not already exist on `origin`, then create its annotated
    tag: `git tag -a vX.Y.Z -m "chore(release): X.Y.Z"` followed by
    `git push origin vX.Y.Z`.
-4. Run `gh release create vX.Y.Z --verify-tag --generate-notes` — publishing the
-   GitHub release triggers `.github/workflows/publish.yml`, which publishes
-   to npm via OIDC trusted publishing (no tokens).
+4. Wait for tag CI to pass. It checks that the tag matches both manifests.
+   Create the GitHub Release, then include the supported Pi version and the
+   pinned Git install command in its notes:
+
+   ```sh
+   gh release create vX.Y.Z --repo SunsetWan/pi-language-tutor \
+     --verify-tag --generate-notes
+   ```
+
+5. Verify the remote tag, GitHub Release, and a Git installation with a
+   temporary `PI_CODING_AGENT_DIR`.
 
 Do not run `npm version` again after the bump PR is merged; the merged manifest
 already contains the release version, and another minor/patch bump would advance
 it to the next version.
 
-The npm tarball is whitelisted by `files` in package.json; if you add
+The package contents are whitelisted by `files` in package.json; if you add
 runtime files outside `src/`, update it and sanity-check `npm pack --dry-run`.
 
 ## Design ground rules
@@ -61,5 +84,5 @@ runtime files outside `src/`, update it and sanity-check `npm pack --dry-run`.
   `flashcards.ts`, `learn.ts`) keep one-way dependencies and expose minimal
   interfaces; `index.ts` stays a thin composition root.
 - Match pi ecosystem conventions before inventing UX: check the built-in
-  commands and `examples/extensions/` in the pi repo (local checkout:
-  `/Users/mack/code/agents/pi`) for the established pattern.
+  commands and `examples/extensions/` in the matching Pi release for the
+  established pattern.

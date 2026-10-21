@@ -6,11 +6,10 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/pi-language-tutor"><img src="https://img.shields.io/npm/v/pi-language-tutor" alt="npm" /></a>
-  <a href="https://github.com/mackt/pi-language-tutor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/mackt/pi-language-tutor/ci.yml?branch=main&label=CI" alt="CI" /></a>
-  <a href="https://github.com/mackt/pi-language-tutor/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/pi-language-tutor" alt="license" /></a>
-  <a href="https://www.npmjs.com/package/pi-language-tutor"><img src="https://img.shields.io/npm/dw/pi-language-tutor" alt="downloads" /></a>
-  <a href="https://github.com/mackt/pi-language-tutor"><img src="https://img.shields.io/github/stars/mackt/pi-language-tutor" alt="stars" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor/releases"><img src="https://img.shields.io/github/v/release/SunsetWan/pi-language-tutor" alt="release" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/SunsetWan/pi-language-tutor/ci.yml?branch=main&label=CI" alt="CI" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor/blob/main/LICENSE"><img src="https://img.shields.io/github/license/SunsetWan/pi-language-tutor" alt="license" /></a>
+  <a href="https://github.com/SunsetWan/pi-language-tutor"><img src="https://img.shields.io/github/stars/SunsetWan/pi-language-tutor" alt="stars" /></a>
 </p>
 
 <p align="center">
@@ -19,25 +18,29 @@
 
 ## 安装
 
-需要 **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** 和 Node.js 22.19.0 或更高版本。本分支仅支持这个 Pi release，不再兼容旧版 Pi 或 OMP。
+需要 **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** 和 Node.js 22.19.0 或更高版本。本 fork 仅支持这个 Pi release，不再兼容旧版 Pi 或 OMP。
 
 ```sh
-pi install npm:pi-language-tutor
+pi install git:github.com/SunsetWan/pi-language-tutor@v0.1.0
 ```
 
 只需这一步。默认配置开箱即用：学英语、母语简体中文。其他语言输入 `/lang`，或直接 `/lang native ja`。
 
+安装时指定的标签会固定版本。需要升级时，改用新 release 的标签重新安装。
+
+如果已经安装上游扩展，先运行 `pi list`，再用 `pi remove <source>` 移除旧来源，然后安装此 fork。例如，上游 npm 包对应 `pi remove npm:pi-language-tutor`；手动创建的软链接则需移除旧链接，避免同时加载两份扩展。已有配置和记忆卡片继续使用原文件。
+
 <details>
-<summary>备选：从 git 安装，或本地开发</summary>
+<summary>开发：跟随 main，或使用本地克隆</summary>
 
 ```sh
-pi install git:github.com/mackt/pi-language-tutor
+pi install git:github.com/SunsetWan/pi-language-tutor@main
 ```
 
 也可以克隆后软链接到 pi 的全局扩展目录（通过 `pi.extensions` 自动发现，`/reload` 热重载）：
 
 ```sh
-git clone https://github.com/mackt/pi-language-tutor.git
+git clone https://github.com/SunsetWan/pi-language-tutor.git
 ln -s "$(pwd)/pi-language-tutor" ~/.pi/agent/extensions/pi-language-tutor
 ```
 
@@ -49,13 +52,13 @@ ln -s "$(pwd)/pi-language-tutor" ~/.pi/agent/extensions/pi-language-tutor
 
 用你正在学的语言写 prompt。agent 照常工作时，面板用**母语**讲清每一处错误——改法、原因，以及整句更地道的说法。
 
-<img src="https://raw.githubusercontent.com/mackt/pi-language-tutor/main/docs/writing-check.png" width="720" alt="Writing check 面板：agent 继续工作时，用母语解释每处错误" />
+<img src="https://raw.githubusercontent.com/SunsetWan/pi-language-tutor/main/docs/writing-check.png" width="720" alt="Writing check 面板：agent 继续工作时，用母语解释每处错误" />
 
 ### ✏ Writing tutor
 
 想法来得太快、先用**母语**写下 prompt。辅导面板教你学习语言里的整句地道表达、关键词汇和承载这句话的语法。
 
-<img src="https://raw.githubusercontent.com/mackt/pi-language-tutor/main/docs/writing-tutor.png" width="720" alt="Writing tutor 面板：整句英语、词汇与语法，对应中文 prompt" />
+<img src="https://raw.githubusercontent.com/SunsetWan/pi-language-tutor/main/docs/writing-tutor.png" width="720" alt="Writing tutor 面板：整句英语、词汇与语法，对应中文 prompt" />
 
 ### 🗂 记忆卡片
 
@@ -65,7 +68,7 @@ Writing tutor 教过的单词会自动保存。运行 `/flashcards`，像用 Ank
 
 agent 回复后按 `alt+t`（macOS 上是 ⌥T）或运行 `/translate`。每个段落下面紧跟译文——沉浸式翻译风格，短代码块原样保留。
 
-<img src="https://raw.githubusercontent.com/mackt/pi-language-tutor/main/docs/bilingual-card.png" width="720" alt="双语卡片：每个英文段落后跟中文译文" />
+<img src="https://raw.githubusercontent.com/SunsetWan/pi-language-tutor/main/docs/bilingual-card.png" width="720" alt="双语卡片：每个英文段落后跟中文译文" />
 
 ## 快速上手
 
@@ -150,7 +153,16 @@ agent 回复后按 `alt+t`（macOS 上是 ⌥T）或运行 `/translate`。每个
 
 跳过规则、check / tutor 分工、记忆卡片调度、双语卡片细节、自定义 provider，以及上下文模式的成本权衡：
 
-→ **[进阶说明](https://github.com/mackt/pi-language-tutor/blob/main/docs/advanced.zh-CN.md)**
+→ **[进阶说明](https://github.com/SunsetWan/pi-language-tutor/blob/main/docs/advanced.zh-CN.md)**
+
+## 维护方式
+
+此 fork 由 SunsetWan 基于 [mackt/pi-language-tutor](https://github.com/mackt/pi-language-tutor) 独立维护，保留 MIT 许可证和上游版权声明。
+
+- `main` 是开发和发布主线，改动通过 PR 合入，合入前须通过 CI。
+- 按需审查并引入上游改动，不自动合并上游。
+- 验证通过后转向最新 Pi release，三个 Pi SDK 依赖一起升级。
+- 此 fork 从 `v0.1.0` 开始独立版本序列，通过 [GitHub](https://github.com/SunsetWan/pi-language-tutor/releases) 发布，并从 Git 安装。
 
 ## 开发
 
@@ -164,9 +176,9 @@ npm run fmt:check
 
 目录结构、脚本与产品图生成方式：
 
-→ **[开发说明](https://github.com/mackt/pi-language-tutor/blob/main/docs/development.zh-CN.md)**
+→ **[开发说明](https://github.com/SunsetWan/pi-language-tutor/blob/main/docs/development.zh-CN.md)**
 
-欢迎 PR。分支与提交约定见 [AGENTS.md](https://github.com/mackt/pi-language-tutor/blob/main/AGENTS.md)。
+欢迎 PR。分支与提交约定见 [AGENTS.md](https://github.com/SunsetWan/pi-language-tutor/blob/main/AGENTS.md)。
 
 ## 许可证
 

@@ -7,7 +7,7 @@ Use Node.js 22.19.0 or later and Pi 1.3.0. The three Pi SDK packages are pinned 
 ## Setup
 
 ```sh
-git clone https://github.com/mackt/pi-language-tutor.git
+git clone https://github.com/SunsetWan/pi-language-tutor.git
 cd pi-language-tutor
 npm ci
 ln -s "$(pwd)" ~/.pi/agent/extensions/pi-language-tutor
