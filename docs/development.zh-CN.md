@@ -7,7 +7,7 @@
 ## 环境
 
 ```sh
-git clone https://github.com/mackt/pi-language-tutor.git
+git clone https://github.com/SunsetWan/pi-language-tutor.git
 cd pi-language-tutor
 npm ci
 ln -s "$(pwd)" ~/.pi/agent/extensions/pi-language-tutor
