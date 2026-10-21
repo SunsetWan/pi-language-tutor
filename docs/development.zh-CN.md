@@ -2,12 +2,14 @@
 
 在本地改 [pi-language-tutor](../README.zh-CN.md)。
 
+使用 Node.js 22.19.0 或更高版本，以及 Pi 1.3.0。三个 Pi SDK 包的开发依赖与对等依赖均固定为 1.3.0；采用新 Pi release 时应一起升级。
+
 ## 环境
 
 ```sh
 git clone https://github.com/mackt/pi-language-tutor.git
 cd pi-language-tutor
-npm install
+npm ci
 ln -s "$(pwd)" ~/.pi/agent/extensions/pi-language-tutor
 ```
 
@@ -16,14 +18,16 @@ ln -s "$(pwd)" ~/.pi/agent/extensions/pi-language-tutor
 ## 脚本
 
 ```sh
-npm run check      # 类型检查（tsc --noEmit）
-npm test           # 单元测试（vitest）：核心行为与记忆卡片调度
+npm run check      # Typecheck
+npm test           # Unit and offline Pi SDK integration tests
 npm run lint       # oxlint
 npm run fmt        # oxfmt
-npm run fmt:check  # 格式检查（CI）
+npm run fmt:check  # Format check
 ```
 
 开 PR 前，`npm run check`、`npm test`、`npm run lint` 与 `npm run fmt:check` 必须全部通过（见 [AGENTS.md](../AGENTS.md)）。
+
+测试覆盖核心行为、FSRS 调度、Pi provider 分发、完整会话重放、渲染器、生命周期事件和持久化。SDK 测试使用 Pi 的 `fauxProvider` 与内存凭据，不需要 API key，也不产生模型调用费用。持久化测试使用临时的 `PI_CODING_AGENT_DIR`。
 
 ## 目录
 
@@ -45,6 +49,20 @@ npm run fmt:check  # 格式检查（CI）
 | `language-learn.ts`         | 包入口：导出 core + 默认扩展                                                         |
 
 特性模块保持单向依赖；不需要 pi API 的新逻辑放进 `core.ts`。
+
+额外模型请求统一走 `modelRegistry.streamSimple()`，完整请求记录通过 `context_with_system` 捕获，翻译卡使用 `registerEntryRenderer()`，自动翻译监听 `agent_settled`，模型提醒监听 `model_select`。旧版 Pi 与 OMP 的适配代码已移除。
+
+## 手动验收
+
+设置临时的 `PI_CODING_AGENT_DIR`，再执行 `pi install /path/to/clone` 安装本地仓库。使用 Pi 1.3.0 和预设检查、翻译响应的离线 `fauxProvider`，将测试配置和卡片保存在这个独立目录。
+
+1. 打开 `/lang`，提交带拼写错误的英语消息，检查 Writing check 面板。
+2. 提交母语消息，检查 Writing tutor 面板和已保存的词汇。
+3. 执行 `/translate`，再启用 `/lang auto on`，检查段落对照与短代码块。
+4. 开启两种上下文模式，检查额外请求是否包含系统消息、工具声明和会话 ID；执行 `/reload`，确认设置与翻译卡仍在。
+5. 打开 `/flashcards`，显示答案，先评 Again 再评 Good；确认 Again 会重复卡片，Good 会保存下次复习时间。
+
+这套流程验收运行时集成与界面行为。预设响应不用于评估真实模型质量或服务商的缓存计费。
 
 ## 产品图
 

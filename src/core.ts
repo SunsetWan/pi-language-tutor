@@ -1,7 +1,7 @@
 /**
  * Pure core: text heuristics, prompt builders, response parsing, and bilingual
  * card assembly. No pi imports, no I/O — everything here is testable with
- * plain values (see test.mjs).
+ * plain values (see test/core.test.ts).
  */
 
 /** Review state: disabled, context-free, or forking the session into each review. */
@@ -395,7 +395,13 @@ export function assistantMessageText(message: unknown): string | undefined {
  * conversation.
  */
 export function finalAssistantReplyText(message: unknown): string | undefined {
-  if (!isRecord(message) || message.stopReason === 'toolUse') return undefined
+  if (!isRecord(message)) return undefined
+  if (
+    message.stopReason === 'toolUse' ||
+    message.stopReason === 'error' ||
+    message.stopReason === 'aborted'
+  )
+    return undefined
   const content = message.content
   if (Array.isArray(content) && content.some((c) => isRecord(c) && c.type === 'toolCall')) {
     return undefined

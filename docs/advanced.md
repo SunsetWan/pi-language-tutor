@@ -53,9 +53,7 @@ Cards are stored in `~/.pi/agent/flashcards.json`. `~/.pi/agent/flashcards-setti
 
 ## Custom providers
 
-On **pi 0.81+**, checks and translations go through the composed provider’s `streamSimple` — the same dispatch the main session uses — so custom providers work whether they were registered as a config (e.g. Cursor’s `cursor-sdk`) or as a native `Provider` object.
-
-On **pi 0.80**, the extension falls back to pi-ai’s `completeSimple`; the global API registry there already covered custom providers.
+On **Pi 1.3.0**, checks and translations use `ctx.modelRegistry.streamSimple()`. Pi handles authentication, request URLs, transcript preparation, and virtual-model routing. Custom providers can use either a config or a native `Provider` object.
 
 ## Context mode
 
@@ -66,7 +64,7 @@ On **pi 0.80**, the extension falls back to pi-ai’s `completeSimple`; the glob
 
 ### Why translation context is off by default
 
-By default a translation only sees the message being translated, so pronouns, project names, and coined terms can come out generic. Context mode **forks** the session: the translation request replays the exact prefix of the main session’s last LLM request (same tools, system prompt, and history). The provider can serve that prefix from its prompt cache, so you pay **cache-read** prices (~10% of input on Anthropic) plus the translation itself.
+By default a translation only sees the message being translated, so pronouns, project names, and coined terms can come out generic. Context mode captures Pi's `context_with_system` transcript and replays it before the translation request. This includes system messages, tool declarations, and history, with the same thinking level and session cache key. A provider can reuse the cached prefix; actual cache use and prices depend on the provider.
 
 ### Two caveats
 

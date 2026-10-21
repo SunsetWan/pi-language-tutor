@@ -53,20 +53,18 @@ Writing tutor 教过的单词会自动保存，并按单词去重。运行 `/fla
 
 ## 自定义 provider
 
-在 **pi 0.81+** 上，写作检查和翻译直接走组合 provider 的 `streamSimple`——与主会话完全相同的分发路径——因此无论 provider 是以配置形式注册（如 Cursor 的 `cursor-sdk`）还是以原生 `Provider` 对象注册，都能正常工作。
-
-在 **pi 0.80** 上则回落到 pi-ai 的 `completeSimple`，那里的全局 API registry 本就覆盖自定义 provider。
+在 **Pi 1.3.0** 上，写作检查和翻译统一使用 `ctx.modelRegistry.streamSimple()`，由 Pi 处理认证、请求地址、会话记录转换和虚拟模型路由。自定义 provider 可以使用配置或原生 `Provider` 对象注册。
 
 ## 上下文模式
 
 ```text
-/lang context on     # 翻译携带完整会话（默认关闭）
-/lang check context  # 写作检查与辅导能看到会话历史
+/lang context on     # Include session context in translations
+/lang check context  # Include session context in writing reviews
 ```
 
 ### 翻译上下文为何默认关闭
 
-默认情况下翻译只能看到被翻译的那条消息，代词指代、项目名、会话里约定的术语都可能译得很泛。上下文模式会从主会话 **fork** 出翻译请求：完整复用主会话上一次 LLM 请求的前缀（相同的工具定义、系统提示词和消息历史）。服务商可以把这段前缀从 prompt cache 里取出，你只需付**缓存读取**的价格（Anthropic 约为正常输入价的 10%）加上翻译本身的开销。
+默认情况下翻译只能看到被翻译的那条消息，代词指代、项目名、会话里约定的术语都可能译得很泛。上下文模式捕获 Pi 的 `context_with_system` 记录，再将其放在翻译请求之前重放，其中包含系统消息、工具声明和会话历史，并使用相同的思考级别与会话缓存键。服务商可以复用缓存前缀；实际是否命中缓存及费用由服务商决定。
 
 ### 两点注意
 

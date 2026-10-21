@@ -1,20 +1,19 @@
 /**
  * Flashcards: card persistence, FSRS scheduling, and review logic.
- * Pure logic — no pi imports.
  */
 
 import { createEmptyCard, fsrs, Rating, type Card, type Grade } from 'ts-fsrs'
 import * as fs from 'node:fs'
-import * as os from 'node:os'
+import { getAgentDir } from '@earendil-works/pi-coding-agent'
 import * as path from 'node:path'
 import { DEFAULT_SETTINGS, loadSettings, type FlashcardSettings } from './flashcard-settings.ts'
 
 export { Rating }
 export type { Grade }
 
-const FLASHCARDS_PATH = path.join(os.homedir(), '.pi', 'agent', 'flashcards.json')
+const FLASHCARDS_PATH = path.join(getAgentDir(), 'flashcards.json')
 
-// No short-term (minute-level) learning steps: /learn is opened manually
+// No short-term (minute-level) learning steps: /flashcards is opened manually
 // between coding sessions, so a single rating graduates a card to a
 // day-level interval. Same-session retries are handled by re-queuing
 // Again/Hard cards in learn.ts instead.

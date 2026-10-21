@@ -3,12 +3,12 @@
  */
 
 import * as fs from 'node:fs'
-import * as os from 'node:os'
+import { getAgentDir } from '@earendil-works/pi-coding-agent'
 import * as path from 'node:path'
 import type { Config } from './core.ts'
 import { normalizeStoredConfig } from './core.ts'
 
-const CONFIG_PATH = path.join(os.homedir(), '.pi', 'agent', 'language-learn.json')
+const CONFIG_PATH = path.join(getAgentDir(), 'language-learn.json')
 
 export const DEFAULT_CONFIG: Config = normalizeStoredConfig({})
 

@@ -1,13 +1,12 @@
 /**
  * Flashcard settings: schema, defaults, clamping, persistence.
- * Pure logic — no pi imports.
  */
 
 import * as fs from 'node:fs'
-import * as os from 'node:os'
+import { getAgentDir } from '@earendil-works/pi-coding-agent'
 import * as path from 'node:path'
 
-const SETTINGS_PATH = path.join(os.homedir(), '.pi', 'agent', 'flashcards-settings.json')
+const SETTINGS_PATH = path.join(getAgentDir(), 'flashcards-settings.json')
 
 export type FlashcardTheme = 'system' | 'light' | 'dark'
 

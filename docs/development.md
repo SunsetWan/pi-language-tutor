@@ -2,12 +2,14 @@
 
 Working on [pi-language-tutor](../README.md) from a local clone.
 
+Use Node.js 22.19.0 or later and Pi 1.3.0. The three Pi SDK packages are pinned to 1.3.0 in both development and peer dependencies. Update them together when adopting a new Pi release.
+
 ## Setup
 
 ```sh
 git clone https://github.com/mackt/pi-language-tutor.git
 cd pi-language-tutor
-npm install
+npm ci
 ln -s "$(pwd)" ~/.pi/agent/extensions/pi-language-tutor
 ```
 
@@ -17,13 +19,15 @@ There is no build step: pi loads TypeScript directly via the `pi.extensions` fie
 
 ```sh
 npm run check      # typecheck (tsc --noEmit)
-npm test           # unit tests (vitest): core behavior and flashcard scheduling
+npm test           # unit and offline Pi SDK integration tests
 npm run lint       # oxlint
 npm run fmt        # oxfmt
 npm run fmt:check  # format check (CI)
 ```
 
 `npm run check`, `npm test`, `npm run lint`, and `npm run fmt:check` must all pass before opening a PR (see [AGENTS.md](../AGENTS.md)).
+
+Tests cover core behavior, FSRS scheduling, Pi provider dispatch, full-transcript replay, renderers, lifecycle events, and persistence. SDK tests use Pi's `fauxProvider` with in-memory credentials. They require no API keys or paid model calls. Persistence tests use a temporary `PI_CODING_AGENT_DIR`.
 
 ## Layout
 
@@ -45,6 +49,20 @@ npm run fmt:check  # format check (CI)
 | `language-learn.ts`         | Package entry: re-exports core + default extension export                                            |
 
 Feature modules keep one-way dependencies; new logic that does not need pi APIs goes in `core.ts`.
+
+Use `modelRegistry.streamSimple()` for side calls, `context_with_system` to capture the full request transcript, `registerEntryRenderer()` for translation cards, `agent_settled` for automatic translation, and `model_select` for model warnings. Older Pi and OMP adapters have been removed.
+
+## Manual acceptance
+
+Install the clone with `pi install /path/to/clone` under a temporary `PI_CODING_AGENT_DIR`. Use Pi 1.3.0 and an offline `fauxProvider` with scripted review and translation responses. Keep test settings and cards in that directory.
+
+1. Open `/lang`, submit an English prompt with a spelling error, and check the Writing check panel.
+2. Submit a native-language prompt. Check the Writing tutor panel and the saved vocabulary.
+3. Run `/translate`, then enable `/lang auto on`. Check paragraph pairs and intact short code blocks.
+4. Enable both context modes. Check that side calls contain system messages, tool declarations, and the session ID. Run `/reload` and check saved settings and translation cards.
+5. Open `/flashcards`, show the answer, rate Again, then Good. Check that Again repeats the card and Good stores its next review date.
+
+This acceptance flow checks runtime integration and UI behavior. Scripted responses do not measure live model quality or provider cache billing.
 
 ## Product screenshots
 
