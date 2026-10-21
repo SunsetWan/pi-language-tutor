@@ -49,8 +49,3 @@ export function showTutorWidget(ctx: ExtensionContext, tutor: TutorResult): void
     return container
   })
 }
-
-/** Hide the tutor widget (shared widget key with the check). */
-export function hideTutorWidget(ctx: ExtensionContext): void {
-  ctx.ui.setWidget(WIDGET_KEY, undefined)
-}

@@ -19,6 +19,8 @@
 
 ## 安装
 
+需要 **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** 和 Node.js 22.19.0 或更高版本。本分支仅支持这个 Pi release，不再兼容旧版 Pi 或 OMP。
+
 ```sh
 pi install npm:pi-language-tutor
 ```
@@ -125,6 +127,8 @@ agent 回复后按 `alt+t`（macOS 上是 ⌥T）或运行 `/translate`。每个
 ## 配置
 
 配置保存在 `~/.pi/agent/language-learn.json`。
+
+设置 `PI_CODING_AGENT_DIR` 后，配置和记忆卡片都会保存在该目录。
 
 ```json
 {

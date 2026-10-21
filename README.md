@@ -19,6 +19,8 @@
 
 ## Install
 
+Requires **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** and Node.js 22.19.0 or later. This branch supports only this Pi release; older Pi versions and OMP are unsupported.
+
 ```sh
 pi install npm:pi-language-tutor
 ```
@@ -125,6 +127,8 @@ Type `/lang` for the interactive menu, or set options directly:
 ## Configuration
 
 Settings persist in `~/.pi/agent/language-learn.json`.
+
+If `PI_CODING_AGENT_DIR` is set, settings and flashcards use that directory.
 
 ```json
 {

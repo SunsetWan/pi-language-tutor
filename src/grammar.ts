@@ -23,7 +23,7 @@ const WIDGET_KEY = 'language-learn'
 
 export interface ReviewDeps {
   /** Fork of the main session's last LLM request (see createForkTracker). */
-  makeFork(ctx: ExtensionContext): ForkContext | undefined
+  makeFork(): ForkContext | undefined
 }
 
 function showCheckWidget(
@@ -78,7 +78,7 @@ export function registerReview(
       // ways a plain request can't (the model answers with a tool call or
       // as the agent in prose, the provider rejects the replayed prefix),
       // so on failure retry context-free.
-      const fork = cfg.check === 'context' ? deps.makeFork(ctx) : undefined
+      const fork = cfg.check === 'context' ? deps.makeFork() : undefined
       let result: ReviewResult | undefined
       try {
         result = await attempt(fork)

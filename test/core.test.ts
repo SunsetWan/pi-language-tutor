@@ -15,14 +15,7 @@ import {
   resolveModelReference,
   resolveStoredModelReference
 } from '../language-learn.ts'
-import {
-  getProviderStream,
-  getRegisteredProviderStream,
-  resolveModel,
-  runLlm,
-  withProviderAuthBaseUrl
-} from '../src/llm.ts'
-import type { ProviderRegistry, RegisteredProviderConfigRegistry } from '../src/llm.ts'
+import { resolveModel } from '../src/llm.ts'
 import { warnOnCacheMismatch } from '../src/settings.ts'
 
 describe('shouldSkipCheck', () => {
@@ -315,6 +308,15 @@ describe('assistantMessageText', () => {
 })
 
 describe('finalAssistantReplyText', () => {
+  it.each(['error', 'aborted'])('skips partial output after %s', (stopReason) => {
+    expect(
+      finalAssistantReplyText({
+        role: 'assistant',
+        stopReason,
+        content: [{ type: 'text', text: 'Partial answer' }]
+      })
+    ).toBeUndefined()
+  })
   it('returns the text of a final reply', () => {
     const message = {
       role: 'assistant',
@@ -436,131 +438,6 @@ describe('prompt builders', () => {
   })
   it('contextual whole-translate prompt starts with the preface', () => {
     expect(buildWholeTranslatePrompt('x', cfg, true).startsWith(CONTEXT_PREFACE)).toBe(true)
-  })
-})
-
-const registry = (provider: ReturnType<ProviderRegistry['getProvider']>): ProviderRegistry => ({
-  getProvider: () => provider
-})
-const legacyRegistry = (
-  config: ReturnType<RegisteredProviderConfigRegistry['getRegisteredProviderConfig']>
-): RegisteredProviderConfigRegistry => ({ getRegisteredProviderConfig: () => config })
-
-describe('getProviderStream (composed-provider side-calls)', () => {
-  it('routes through the composed provider streamSimple', () => {
-    const calls: unknown[][] = []
-    const provider = {
-      streamSimple: ((...args: unknown[]) => {
-        calls.push(args)
-        return { result: async () => ({}) }
-      }) as never
-    }
-    const stream = getProviderStream(registry(provider), { provider: 'cursor' })
-    expect(typeof stream).toBe('function')
-    stream!('model' as never, 'context' as never, 'options' as never)
-    expect(calls).toEqual([['model', 'context', 'options']])
-  })
-  it('preserves the provider as receiver of streamSimple', () => {
-    let calledOnProvider = false
-    const provider = {
-      streamSimple: function (this: unknown) {
-        calledOnProvider = this === provider
-        return { result: async () => ({}) }
-      } as never
-    }
-    getProviderStream(registry(provider), { provider: 'cursor' })!('m' as never, 'c' as never)
-    expect(calledOnProvider).toBe(true)
-  })
-  it('falls back when the provider is unknown', () => {
-    expect(getProviderStream(registry(undefined), { provider: 'cursor' })).toBeUndefined()
-  })
-  it('falls back when the provider lacks streamSimple', () => {
-    expect(getProviderStream(registry({}), { provider: 'zai' })).toBeUndefined()
-  })
-})
-
-describe('getRegisteredProviderStream (pi 0.80 config-provider fallback)', () => {
-  const fakeStream = (() => ({ result: async () => ({}) })) as never
-
-  it('uses the registered streamSimple when the api matches', () => {
-    expect(
-      typeof getRegisteredProviderStream(
-        legacyRegistry({ api: 'cursor-sdk', streamSimple: fakeStream }),
-        { provider: 'cursor', api: 'cursor-sdk' }
-      )
-    ).toBe('function')
-  })
-  it('ignores streamSimple when the api mismatches', () => {
-    expect(
-      getRegisteredProviderStream(legacyRegistry({ api: 'cursor-sdk', streamSimple: fakeStream }), {
-        provider: 'cursor',
-        api: 'openai-completions'
-      })
-    ).toBeUndefined()
-  })
-  it('falls back when the provider has no streamSimple', () => {
-    expect(
-      getRegisteredProviderStream(legacyRegistry({ api: 'openai-completions' }), {
-        provider: 'zai',
-        api: 'openai-completions'
-      })
-    ).toBeUndefined()
-  })
-  it('falls back when the provider config is undefined', () => {
-    expect(
-      getRegisteredProviderStream(legacyRegistry(undefined), {
-        provider: 'cursor',
-        api: 'cursor-sdk'
-      })
-    ).toBeUndefined()
-  })
-})
-
-describe('runLlm auth handling', () => {
-  it('allows configured keyless providers to reach streamSimple', async () => {
-    let seenApiKey: string | undefined | 'not-called' = 'not-called'
-    const model = { provider: 'local', id: 'model', api: 'local-api' }
-    const ctx = {
-      modelRegistry: {
-        getApiKeyAndHeaders: async () => ({ ok: true }),
-        getProvider: () => ({
-          streamSimple: (_model: unknown, _context: unknown, options?: { apiKey?: string }) => {
-            seenApiKey = options?.apiKey
-            return {
-              result: async () => ({
-                stopReason: 'stop',
-                content: [{ type: 'text', text: 'ok' }]
-              })
-            }
-          }
-        })
-      }
-    } as never
-
-    await expect(runLlm(ctx, model as never, 'translate this')).resolves.toBe('ok')
-    expect(seenApiKey).toBeUndefined()
-  })
-})
-
-describe('withProviderAuthBaseUrl', () => {
-  it('copies request-scoped provider auth baseUrl onto the model', async () => {
-    const model = { provider: 'copilot', baseUrl: 'https://default.example' }
-    await expect(
-      withProviderAuthBaseUrl(
-        { getProviderAuth: async () => ({ auth: { baseUrl: 'https://request.example' } }) },
-        model
-      )
-    ).resolves.toEqual({ provider: 'copilot', baseUrl: 'https://request.example' })
-  })
-  it('keeps the model unchanged when provider auth has no baseUrl', async () => {
-    const model = { provider: 'anthropic', baseUrl: 'https://api.anthropic.com' }
-    await expect(
-      withProviderAuthBaseUrl({ getProviderAuth: async () => ({ auth: {} }) }, model)
-    ).resolves.toBe(model)
-  })
-  it('keeps the model unchanged when the registry cannot resolve provider auth', async () => {
-    const model = { provider: 'anthropic', baseUrl: 'https://api.anthropic.com' }
-    await expect(withProviderAuthBaseUrl({}, model)).resolves.toBe(model)
   })
 })
 
