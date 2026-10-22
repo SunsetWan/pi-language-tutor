@@ -25,7 +25,7 @@ async function setup() {
   return { registry, faux, ctx, model: faux.getModel() }
 }
 
-describe('Pi 1.3 side calls', () => {
+describe('Pi SDK side calls', () => {
   it('uses a keyless native provider and returns trimmed text', async () => {
     const { faux, ctx, model } = await setup()
     faux.setResponses([fauxAssistantMessage('  translated\n')])

@@ -53,7 +53,7 @@ Cards are stored in `~/.pi/agent/flashcards.json`. `~/.pi/agent/flashcards-setti
 
 ## Custom providers
 
-On **Pi 1.3.0**, checks and translations use `ctx.modelRegistry.streamSimple()`. Pi handles authentication, request URLs, transcript preparation, and virtual-model routing. Custom providers can use either a config or a native `Provider` object.
+On **Pi 1.4.0**, checks and translations use `ctx.modelRegistry.streamSimple()`. Pi handles authentication, request URLs, transcript preparation, and virtual-model routing. Custom providers can use either a config or a native `Provider` object.
 
 ## Context mode
 

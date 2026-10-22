@@ -18,10 +18,10 @@
 
 ## 安装
 
-需要 **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** 和 Node.js 22.19.0 或更高版本。本 fork 仅支持这个 Pi release，不再兼容旧版 Pi 或 OMP。
+需要 **[Pi 1.4.0](https://github.com/earendil-works/pi/releases/tag/v1.4.0)** 和 Node.js 22.19.0 或更高版本。本 fork 仅支持这个 Pi release，不再兼容旧版 Pi 或 OMP。
 
 ```sh
-pi install git:github.com/SunsetWan/pi-language-tutor@v0.1.0
+pi install git:github.com/SunsetWan/pi-language-tutor@v0.1.1
 ```
 
 只需这一步。默认配置开箱即用：学英语、母语简体中文。其他语言输入 `/lang`，或直接 `/lang native ja`。

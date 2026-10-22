@@ -2,7 +2,7 @@
 
 在本地改 [pi-language-tutor](../README.zh-CN.md)。
 
-使用 Node.js 22.19.0 或更高版本，以及 Pi 1.3.0。三个 Pi SDK 包的开发依赖与对等依赖均固定为 1.3.0；采用新 Pi release 时应一起升级。
+使用 Node.js 22.19.0 或更高版本，以及 Pi 1.4.0。三个 Pi SDK 包的开发依赖与对等依赖均固定为 1.4.0；采用新 Pi release 时应一起升级。
 
 ## 环境
 
@@ -54,7 +54,7 @@ npm run fmt:check  # Format check
 
 ## 手动验收
 
-设置临时的 `PI_CODING_AGENT_DIR`，再执行 `pi install /path/to/clone` 安装本地仓库。使用 Pi 1.3.0 和预设检查、翻译响应的离线 `fauxProvider`，将测试配置和卡片保存在这个独立目录。
+设置临时的 `PI_CODING_AGENT_DIR`，再执行 `pi install /path/to/clone` 安装本地仓库。使用 Pi 1.4.0 和预设检查、翻译响应的离线 `fauxProvider`，将测试配置和卡片保存在这个独立目录。
 
 1. 打开 `/lang`，提交带拼写错误的英语消息，检查 Writing check 面板。
 2. 提交母语消息，检查 Writing tutor 面板和已保存的词汇。
