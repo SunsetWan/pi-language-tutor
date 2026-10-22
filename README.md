@@ -18,10 +18,10 @@
 
 ## Install
 
-Requires **[Pi 1.3.0](https://github.com/earendil-works/pi/releases/tag/v1.3.0)** and Node.js 22.19.0 or later. This fork supports only this Pi release; older Pi versions and OMP are unsupported.
+Requires **[Pi 1.4.0](https://github.com/earendil-works/pi/releases/tag/v1.4.0)** and Node.js 22.19.0 or later. This fork supports only this Pi release; older Pi versions and OMP are unsupported.
 
 ```sh
-pi install git:github.com/SunsetWan/pi-language-tutor@v0.1.0
+pi install git:github.com/SunsetWan/pi-language-tutor@v0.1.1
 ```
 
 That’s the only required step. Defaults (learning English, native Simplified Chinese) work out of the box. Another language? Type `/lang` or run `/lang native ja`.

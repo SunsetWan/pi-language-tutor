@@ -53,7 +53,7 @@ Writing tutor 教过的单词会自动保存，并按单词去重。运行 `/fla
 
 ## 自定义 provider
 
-在 **Pi 1.3.0** 上，写作检查和翻译统一使用 `ctx.modelRegistry.streamSimple()`，由 Pi 处理认证、请求地址、会话记录转换和虚拟模型路由。自定义 provider 可以使用配置或原生 `Provider` 对象注册。
+在 **Pi 1.4.0** 上，写作检查和翻译统一使用 `ctx.modelRegistry.streamSimple()`，由 Pi 处理认证、请求地址、会话记录转换和虚拟模型路由。自定义 provider 可以使用配置或原生 `Provider` 对象注册。
 
 ## 上下文模式
 

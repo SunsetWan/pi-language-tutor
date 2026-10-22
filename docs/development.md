@@ -2,7 +2,7 @@
 
 Working on [pi-language-tutor](../README.md) from a local clone.
 
-Use Node.js 22.19.0 or later and Pi 1.3.0. The three Pi SDK packages are pinned to 1.3.0 in both development and peer dependencies. Update them together when adopting a new Pi release.
+Use Node.js 22.19.0 or later and Pi 1.4.0. The three Pi SDK packages are pinned to 1.4.0 in both development and peer dependencies. Update them together when adopting a new Pi release.
 
 ## Setup
 
@@ -54,7 +54,7 @@ Use `modelRegistry.streamSimple()` for side calls, `context_with_system` to capt
 
 ## Manual acceptance
 
-Install the clone with `pi install /path/to/clone` under a temporary `PI_CODING_AGENT_DIR`. Use Pi 1.3.0 and an offline `fauxProvider` with scripted review and translation responses. Keep test settings and cards in that directory.
+Install the clone with `pi install /path/to/clone` under a temporary `PI_CODING_AGENT_DIR`. Use Pi 1.4.0 and an offline `fauxProvider` with scripted review and translation responses. Keep test settings and cards in that directory.
 
 1. Open `/lang`, submit an English prompt with a spelling error, and check the Writing check panel.
 2. Submit a native-language prompt. Check the Writing tutor panel and the saved vocabulary.
